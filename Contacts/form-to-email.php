@@ -12,14 +12,14 @@ header('Location: index.html');
 exit;
 }
 
-$email_from='snsindya@gmail.com'; //my email here Bruh! :-)
+$email_from='info@twin-p.com'; //my email here Bruh! :-)
 $email_subject="New Email Received";
 $email_message="You have Received a new mail from $name .\n".
                 "Email Address: $visitor_email . \n".
 				"Subject: $subject \n".
 				"Message: \n $message";
 
-$to="snsindya@gmail.com"; //my email too bruh :-)
+$to="info@twin-p.com"; //my email too bruh :-)
 $headers="Sent From: $email_from  \r\n";
 $headers .="Reply To: $visitor_email \r\n";
 
