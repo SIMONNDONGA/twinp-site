@@ -1,3 +1,90 @@
+<?php 
+$your_email ='snsindya@gmail.com';// <<=== update to your email address
+
+session_start();
+$errors = '';
+$success='';
+$name = '';
+$subject='';
+$message='';
+$visitor_email = '';
+
+if(isset($_POST['submit']))
+{
+
+	
+		$name=$_POST['name'];
+		$visitor_email=$_POST['email'];
+		$subject=$_POST['subject'];
+		$message=$_POST['message'];
+
+	///------------Do Validations-------------
+	if(empty($name)||empty($visitor_email))
+	{
+		$errors .= "\n Name and Email are required fields. ";	
+	}
+	if(IsInjected($visitor_email))
+	{
+		$errors .= "\n Bad email value!";
+	}
+	if(empty($_SESSION['6_letters_code'] ) ||
+	  strcasecmp($_SESSION['6_letters_code'], $_POST['6_letters_code']) != 0)
+	{
+	//Note: the captcha code is compared case insensitively.
+	//if you want case sensitive match, update the check above to
+	// strcmp()
+		$errors .= "\n The captcha code does not match!";
+	}
+	
+	if(empty($errors))
+	{
+		$success .= "\n Mail was successifully sent";
+		//send the email		
+		$to = $your_email;
+		$subject="New Email Received";
+		$from = $your_email;
+		$ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+		
+		$body = "You have Received a new mail from .\n".
+		"Name: $name\n".
+		"Email: $visitor_email \n".
+		"Message: \n ".
+		"$message\n".
+		"IP: $ip\n";	
+		
+		$headers="Sent From: $from \r\n";
+	    $headers .="Reply To: $visitor_email \r\n";
+		
+		mail($to, $subject, $body,$headers);		
+		
+		header('Location: index.php');
+		
+	}
+}
+
+// Function to validate against any email injection attempts
+function IsInjected($str)
+{
+  $injections = array('(\n+)',
+              '(\r+)',
+              '(\t+)',
+              '(%0A+)',
+              '(%0D+)',
+              '(%08+)',
+              '(%09+)'
+              );
+  $inject = join('|', $injections);
+  $inject = "/$inject/i";
+  if(preg_match($inject,$str))
+    {
+    return true;
+  }
+  else
+    {
+    return false;
+  }
+}
+?>
 <!DOCTYPE html>
 <html lang="en"
 <head>
@@ -7,7 +94,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-<title>TWIN P LIMITED</title>
+<title>TWIN P LIMITED-Contacts</title>
 <!-- Bootstrap core CSS -->
     <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="../images/T.png">
@@ -16,7 +103,7 @@
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="../assets/js/ie-emulation-modes-warning.js"></script>
     <script src="..dist/js/bootstrap.js"></script>
-    <script src="../css & javascript/gen_validatorv4.js" type="text/javascript"></script>
+    <script language="javascript" src="../css & javascript/gen_validatorv4.js" type="text/javascript"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -64,7 +151,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
         <div class="navbar-header">
         <div id="logo">
                  
-                    <img alt="Brand" src="../images/logo180.jpg">
+                    <img alt="Twin-P Limited" src="../images/logo180.jpg">
                   
                 </div>
                 </div>
@@ -84,60 +171,86 @@ google.maps.event.addDomListener(window, 'load', initialize);
                     <li><a href="../Upholstery & Carpet Cleaning/index.html">Upholstery and Carpet Cleaning</a></li>
                   </ul>
                 </li>
-                 <li class="active"><a href="index.html">CONTACTS</a></li>
+                 <li class="active"><a href="index.php">CONTACTS</a></li>
               </ul>
             </div>
            
         </nav>
+      
         
         <!--googlemap bruh! -->
 <div id="map-canvas">
 </div>
+  <?php
+if(!empty($errors)){
+echo "<p class='alert alert-danger' role='alert'>".nl2br($errors)."</p>";
+}
+else if(!empty($success)){
+echo "<p class=class='alert alert-success' role='alert'>".nl2br($success)."</p>";
+}
+
+?>
+
 
 <!--Email form bruh!-->
 <div id="email-form">
-    <form method="post" name="myemailform" action="form-to-email.php">
+    <form method="post" name="myemailform" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>">
      
     <p>
     <label for="name">Enter your Name*</label><br>
-    <input type="text" id="Name" name="Name" size="80px">
+    <input type="text" id="name" name="name" size="80px" value="<?php htmlentities($name)?>">
     </p>
     <p>
     <label for="email">Email*</label><br>
-    <input type="text" id="Email" name="Email" size="80px">
+    <input type="text" id="email" name="email" size="80px" value="<?php htmlentities($visitor_email) ?>">
     </p>
     <p>
     <label for="subject">Subject</label><br>
-    <input type="text" id="Subject" name="Subject" size="80px">
+    <input type="text" id="subject" name="subject" size="80px" value="<?php htmlentities($subject)?>">
     </p>
     <p>
     <label for="message">Message</label><br>
-    <textarea name="Message" id="Message" ></textarea>
+    <textarea name="message" id="message" rows="10" cols="50"><?php htmlentities($message)?></textarea>
     </p>
     <p>
-    <input type="submit" id="submit" class="btn" value="Send">
+    <img src="captcha_code_file.php?rand=<?php echo rand(); ?>" id='captchaimg' ><br>
+    <label for='message'>Enter the code above here :</label><br>
+    <input id="6_letters_code" name="6_letters_code" type="text"><br>
+    <small>Can't read the image? click <a href='javascript: refreshCaptcha();'>here</a> to refresh</small>
+	</p>
+    <p>
+    <input type="submit" name="submit" class="btn" value="Send">
     </p>
     </form>
     
     <!--client side validation bruh!-->
-    <script type="text/javascript">
+    <script language="javascript">
+	
 	var frmValidator= new Validator("myemailform");
-	frmvalidator.EnableOnPageErrorDisplay();
-    frmvalidator.EnableMsgsTogether();
+	//frmValidator.EnableOnPageErrorDisplaySingleBox();
+    //frmValidator.EnableMsgsTogether();
 	
-	frmValidator.addValidation("Name","req","Please Enter your Name");
-	frmValidator.addValidation("Name","maxlen=40","The name is too long(40 charcters max)");
+	frmValidator.addValidation("name","req","Please Enter your Name");
+	frmValidator.addValidation("name","maxlen=40","The name is too long(40 charcters max)");
 	
-	frmValidator.addValidation("Email","req","Please Enter your Email address");
-	frmValidator.addValidation("Email","email","Enter a valid email format");
-	frmValidator.addValidation("Email","maxlen=50","Email exceeds Limit(max 50 characters)");
+	frmValidator.addValidation("email","req","Please Enter your Email address");
+	frmValidator.addValidation("email","email","Enter a valid email format");
+	frmValidator.addValidation("email","maxlen=50","Email exceeds Limit(max 50 characters)");
 	
-	frmValidator.addValidation("Subject","req","Subject cannot be empty");
-	frmValidator.addValidation("Subject","maxlen=50","Subject too long(max 50 characters");
+	frmValidator.addValidation("subject","req","Subject cannot be empty");
+	frmValidator.addValidation("subject","maxlen=50","Subject too long(max 50 characters");
 	
-	frmValidator.addValidation("Message","req","Message cannot be empty");
-	frmValidator.addValidation("Message","maxlen=2048","Message too long(over 2kb)");
+	frmValidator.addValidation("message","req","Message cannot be empty");
+	frmValidator.addValidation("message","maxlen=2048","Message too long(over 2kb)");
 	</script>
+    
+		<script language='JavaScript' type='text/javascript'>
+    function refreshCaptcha()
+    {
+        var img = document.images['captchaimg'];
+        img.src = img.src.substring(0,img.src.lastIndexOf("?"))+"?rand="+Math.random()*1000;
+    }
+    </script>
 </div>
 
 

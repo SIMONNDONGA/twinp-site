@@ -4,7 +4,8 @@
 
 body {
   padding-bottom: 40px;
-  color:#CCFFFF}
+  padding-left:150px;
+  padding-right:150px;  }
 
 
 /* CUSTOMIZE THE NAVBAR
@@ -52,7 +53,7 @@ body {
 /* Since positioning the image, we need to help out the caption */
 .carousel-caption {
   z-index: 10;
-  color:#770C00;
+  color:#000000;
   font-family:Verdana, Arial, Helvetica, sans-serif
 }
 
@@ -60,13 +61,12 @@ body {
 .carousel .item {
   height: 500px;
   background-color:#FFFFFF;
-  padding-left:200px;
-  padding-right:200px;
+ 
   }
 .carousel-inner > .item > img {
 	position: absolute;
 	top: 88px;
-	left: 400px;
+	left: 300px;
 	min-width: 40%;
 	height: 300px;
 }
@@ -141,20 +141,17 @@ body {
 /* Thin out the marketing headings */
 .featurette-heading {
   font-style:italic;
+  font-size:20px;
   font-family:"Times New Roman", Times, serif;
  color:#770C00;
   text-decoration:underline;
   line-height: 1;
-  padding-left:150px;
-  padding-right:150px;
   text-transform:capitalize;
 }
 .featurette-body{
 font-family:"Times New Roman", Times, serif;
-padding-left:150px;
-padding-right:150px;
 color:#770C00;
-font-size:20px;
+font-size:16px;
 font-style:normal;
 }
 
@@ -162,7 +159,6 @@ font-style:normal;
 .jumbotron {
   text-align: center;
   background-color:transparent;
-  padding-left:300px;
   padding-right:300px;
   margin-right:600px;
   width:1300px;
@@ -236,7 +232,7 @@ text-align:center;
   }
 }
 .container{
-padding-left:200px;
+
 padding-right:200px;}
 
 /*Container css*/
@@ -248,18 +244,19 @@ text-align:left;}
 
 /*footer*/
 .footer{
-background-color:#D4DFFF;
+background-color:#FF5FFF;
 font:Georgia, "Times New Roman", Times, serif;
 font-style:italic;
 color:#001300;
 height:300px;
+
 }
 
 /*google maps*/
 #map-canvas{
 margin-top:90px;
 margin-bottom:30px;
-margin-left:100px;
+margin-left:150px;
 width:500px;
 height:400px;
 background-color:#CCC;}
@@ -281,7 +278,7 @@ font-weight:500;
 overflow:visible;
 margin-top:20px;
 margin-bottom:30px;
-margin-left:100px;
+margin-left:150px;
 color:#001300;
 background-color:#FFFBF0}
 
@@ -296,8 +293,6 @@ background-color:#FFFBF0}
   font-family:"Times New Roman", Times, serif;
   font-size:16px;
  color:#770C00;
-  margin-left:60px;
-  margin-right:400px;
   padding-left:150px;
   padding-right:150px;
 }
@@ -310,3 +305,4 @@ font-style:italic;
 padding-left:150px;
 padding-right:150px;
 }
+
