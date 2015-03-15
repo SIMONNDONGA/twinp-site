@@ -86,7 +86,7 @@ function IsInjected($str)
 }
 ?>
 <!DOCTYPE html>
-<html lang="en"
+<html lang="en">
 <head>
      <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -166,9 +166,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
                     <li><a href="../Pest Control/index.html">Pest Control Services</a></li>
                     <li class="divider"></li>
                     <li class="dropdown-header">Cleaning Services</li>
-                    <li><a href="../Domestic & Commecial Cleaning/index.html">Domestic and Commercial Cleaning</a></li>
+                    <li><a href="../Domestic & Commecial Cleaning/index.html">Domestic &amp; Commercial Cleaning</a></li>
                     <li><a href="../Sanitation/index.html">Sanitation Services</a></li>
-                    <li><a href="../Upholstery & Carpet Cleaning/index.html">Upholstery and Carpet Cleaning</a></li>
+                    <li><a href="../Upholstery & Carpet Cleaning/index.html">Upholstery &amp; Carpet Cleaning</a></li>
                   </ul>
                 </li>
                  <li class="active"><a href="index.php">CONTACTS</a></li>
