@@ -1,25 +1,30 @@
 <?php 
-$your_email ='snsindya@gmail.com';// <<=== update to your email address
+// Pear library includes
+// You should have the pear lib installed
+include_once('Mail.php');
+include_once('Mail_Mime/mime.php');
 
-session_start();
-$errors = '';
-$success='';
-$name = '';
-$subject='';
-$message='';
-$visitor_email = '';
+//Settings 
+$max_allowed_file_size = 1000; // size in KB 
+$allowed_extensions = array("doc", "docx", "pdf", "txt");
+$upload_folder = '../uploads/'; //<-- this folder must be writeable by the script
+$your_email = 'info@twin-p.com';//<<--  update this to your email address
+
+$errors ='';
 
 if(isset($_POST['submit']))
 {
-
+	//Get the uploaded file information
+	$name_of_uploaded_file =  basename($_FILES['uploaded_file']['name']);
 	
-		$name=$_POST['name'];
-		$visitor_email=$_POST['email'];
-		$subject=$_POST['subject'];
-		$message=$_POST['message'];
-
+	//get the file extension of the file
+	$type_of_uploaded_file = substr($name_of_uploaded_file, 
+							strrpos($name_of_uploaded_file, '.') + 1);
+	
+	$size_of_uploaded_file = $_FILES["uploaded_file"]["size"]/1024;
+	
 	///------------Do Validations-------------
-	if(empty($name)||empty($visitor_email))
+	if(empty($_POST['name'])||empty($_POST['email']))
 	{
 		$errors .= "\n Name and Email are required fields. ";	
 	}
@@ -27,41 +32,68 @@ if(isset($_POST['submit']))
 	{
 		$errors .= "\n Bad email value!";
 	}
-	if(empty($_SESSION['6_letters_code'] ) ||
-	  strcasecmp($_SESSION['6_letters_code'], $_POST['6_letters_code']) != 0)
+	
+	if($size_of_uploaded_file > $max_allowed_file_size ) 
 	{
-	//Note: the captcha code is compared case insensitively.
-	//if you want case sensitive match, update the check above to
-	// strcmp()
-		$errors .= "\n The captcha code does not match!";
+		$errors .= "\n Size of file should be less than $max_allowed_file_size";
 	}
 	
+	//------ Validate the file extension -----
+	$allowed_ext = false;
+	for($i=0; $i<sizeof($allowed_extensions); $i++) 
+	{ 
+		if(strcasecmp($allowed_extensions[$i],$type_of_uploaded_file) == 0)
+		{
+			$allowed_ext = true;		
+		}
+	}
+	
+	if(!$allowed_ext)
+	{
+		$errors .= "\n The uploaded file is not supported file type. ".
+		" Only the following file types are supported: ".implode(',',$allowed_extensions);
+	}
+	
+	//send the email 
 	if(empty($errors))
 	{
-		$success .= "\n Mail was successifully sent";
-		//send the email		
+		//copy the temp. uploaded file to uploads folder
+		$path_of_uploaded_file = $upload_folder . $name_of_uploaded_file;
+		$tmp_path = $_FILES["uploaded_file"]["tmp_name"];
+		
+		if(is_uploaded_file($tmp_path))
+		{
+		    if(!copy($tmp_path,$path_of_uploaded_file))
+		    {
+		    	$errors .= '\n error while copying the uploaded file';
+		    }
+		}
+		
+		//send the email
+		$name = $_POST['name'];
+		$visitor_email = $_POST['email'];
+		$user_message = $_POST['message'];
 		$to = $your_email;
-		$subject="New Email Received";
+		$subject="New form submission";
 		$from = $your_email;
 		$ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+		$text = "A New employment Application received from  $name :\n $user_message";
 		
-		$body = "You have Received a new mail from .\n".
-		"Name: $name\n".
-		"Email: $visitor_email \n".
-		"Message: \n ".
-		"$message\n".
-		"IP: $ip\n";	
-		
-		$headers="Sent From: $from \r\n";
-	    $headers .="Reply To: $visitor_email \r\n";
-		
-		mail($to, $subject, $body,$headers);		
+		$message = new Mail_mime(); 
+		$message->setTXTBody($text); 
+		$message->addAttachment($path_of_uploaded_file);
+		$body = $message->get();
+		$extraheaders = array("From"=>$from, "Subject"=>$subject,"Reply-To"=>$visitor_email, "IP"=>$ip);
+		$headers = $message->headers($extraheaders);
+		$mail = Mail::factory("mail");
+		$mail->send($to, $headers, $body);
+		//redirect to home page
+		$success .= "\n Application was successifully sent";
 		
 		header('Location: index.php');
-		
 	}
 }
-
+///////////////////////////Functions/////////////////
 // Function to validate against any email injection attempts
 function IsInjected($str)
 {
@@ -94,7 +126,7 @@ function IsInjected($str)
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-<title>TWIN P LIMITED-Contacts</title>
+<title>TWIN P LIMITED-Careers</title>
 <!-- Bootstrap core CSS -->
     <link href="../dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" href="../images/T.png">
@@ -114,33 +146,7 @@ function IsInjected($str)
  <!-- Custom styles for this template -->
     <link href="../css & javascript/carousel.css" rel="stylesheet">
     
-    
-    <!--google api bruh! -->
-<script src="https://maps.googleapis.com/maps/api/js"></script>
-    
-    <!---javascript to load map bruh!--->
-   <script>
-var myCenter=new google.maps.LatLng(-1.294155,36.887932);
-
-function initialize()
-{
-var mapProp = {
-  center:myCenter,
-  zoom:16,
-  mapTypeId:google.maps.MapTypeId.ROADMAP
-  };
-
-var map=new google.maps.Map(document.getElementById("map-canvas"),mapProp);
-
-var marker=new google.maps.Marker({
-  position:myCenter,
-  });
-
-marker.setMap(map);
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
-</script>
+  
 </head>
 <!-- NAVBAR
 ================================================== -->
@@ -170,16 +176,14 @@ google.maps.event.addDomListener(window, 'load', initialize);
                     
                   </ul>
                 </li>
-                <li><a href="../Careers/index.php">CAREERS</a>
-                 <li class="active"><a href="index.php">CONTACTS</a></li>
+                <li class="active"><a href="index.php">CAREERS</a></li>
+                 <li><a  href="../Contacts/index.php">CONTACTS</a></li>
               </ul>
             </div>
            
         </nav>
       
- <div class="contained">       
-        <!--googlemap bruh! -->
-<div id="map-canvas">
+        
 </div>
   <?php
 if(!empty($errors)){
@@ -191,66 +195,41 @@ echo "<p class=class='alert alert-success' role='alert'>".nl2br($success)."</p>"
 
 ?>
 
-
+<div class="contained">
+	<div class="blog-post">
+		<h2 class="blog-post-title">Vacancies Available</h2>
+		<p>None at this time</p>
+	</div>
 <!--Email form bruh!-->
 <div id="email-form">
-    <form method="post" name="myemailform" action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>">
-     
-    <p>
-    <label for="name">Enter your Name*</label><br>
-    <input type="text" id="name" name="name" size="80px" value="<?php htmlentities($name)?>">
-    </p>
-    <p>
-    <label for="email">Email*</label><br>
-    <input type="text" id="email" name="email" size="80px" value="<?php htmlentities($visitor_email) ?>">
-    </p>
-    <p>
-    <label for="subject">Subject</label><br>
-    <input type="text" id="subject" name="subject" size="80px" value="<?php htmlentities($subject)?>">
-    </p>
-    <p>
-    <label for="message">Message</label><br>
-    <textarea name="message" id="message" rows="10" cols="50"><?php htmlentities($message)?></textarea>
-    </p>
-    <p>
-    <img src="captcha_code_file.php?rand=<?php echo rand(); ?>" id='captchaimg' ><br>
-    <label for='message'>Enter the code above here :</label><br>
-    <input id="6_letters_code" name="6_letters_code" type="text"><br>
-    <small>Can't read the image? click <a href='javascript: refreshCaptcha();'>here</a> to refresh</small>
-	</p>
-    <p>
-    <input type="submit" name="submit" class="btn" value="Send">
-    </p>
-    </form>
+    <form method="POST" name="email_form_with_php" 
+action="<?php echo htmlentities($_SERVER['PHP_SELF']); ?>" enctype="multipart/form-data"> 
+<p>
+<label for='name'>Name: </label><br>
+<input type="text" size="80px" name="name" >
+</p>
+<p>
+<label for='email'>Email: </label><br>
+<input type="text" size="80px" name="email" >
+</p>
+<p>
+<label for='message'>Message:</label> <br>
+<textarea name="message" rows=10 cols="50"></textarea>
+</p>
+<p>
+<label for='uploaded_file'>Select C.V. To Upload:</label> <br>
+<input type="file" name="uploaded_file">
+</p>
+<input class="btn" type="submit" value="Submit Application" name='submit'>
+</form>
+    <script language="JavaScript">
+
+var frmvalidator  = new Validator("email_form_with_php");
+frmvalidator.addValidation("name","req","Please provide your name"); 
+frmvalidator.addValidation("email","req","Please provide your email"); 
+frmvalidator.addValidation("email","email","Please enter a valid email address"); 
+</script>
     
-    <!--client side validation bruh!-->
-    <script language="javascript">
-	
-	var frmValidator= new Validator("myemailform");
-	//frmValidator.EnableOnPageErrorDisplaySingleBox();
-    //frmValidator.EnableMsgsTogether();
-	
-	frmValidator.addValidation("name","req","Please Enter your Name");
-	frmValidator.addValidation("name","maxlen=40","The name is too long(40 charcters max)");
-	
-	frmValidator.addValidation("email","req","Please Enter your Email address");
-	frmValidator.addValidation("email","email","Enter a valid email format");
-	frmValidator.addValidation("email","maxlen=50","Email exceeds Limit(max 50 characters)");
-	
-	frmValidator.addValidation("subject","req","Subject cannot be empty");
-	frmValidator.addValidation("subject","maxlen=50","Subject too long(max 50 characters");
-	
-	frmValidator.addValidation("message","req","Message cannot be empty");
-	frmValidator.addValidation("message","maxlen=2048","Message too long(over 2kb)");
-	</script>
-    
-		<script language='JavaScript' type='text/javascript'>
-    function refreshCaptcha()
-    {
-        var img = document.images['captchaimg'];
-        img.src = img.src.substring(0,img.src.lastIndexOf("?"))+"?rand="+Math.random()*1000;
-    }
-    </script>
 </div>
 
 

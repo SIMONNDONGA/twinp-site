@@ -3,9 +3,23 @@
 /* Padding below the footer and lighter body text */
 
 body {
-  padding-bottom: 40px;
-  padding-left:150px;
-  padding-right:150px;  }
+  padding-bottom: 0px;
+  padding-left:200px;
+  padding-right:200px; 
+  background-color:#FFFFCC;
+ }
+ 
+ .contained {
+	width: 1000px;
+	height: auto;
+	border: 1px solid #cccccc;
+	background-color:#F7F7F9;
+	border-radius: 10px;
+	margin: auto;
+	text-align: left;
+	margin-top: 85px;
+	margin-bottom: 10px;
+}
 
 
 /* CUSTOMIZE THE NAVBAR
@@ -32,13 +46,15 @@ body {
 .navbar-wrapper .navbar .container {
   width: auto;
 }
-.navbar .brand { max-height: 40px; overflow: visible;padding-top: 0;padding-bottom: 0; }
-
+.navbar .brand { max-height: 40px;
+ overflow: visible;
+ padding-top: 0;
+ padding-bottom: 0; }
 .navbar-nav > li{
   padding-left:30px;
   padding-right:30px;
-  margin-left:30px;
-  margin-right:30px;
+  margin-left:20px;
+  margin-right:20px;
 }
 
 
@@ -48,27 +64,33 @@ body {
 /* Carousel base class */
 .carousel {
   height: 400px;
-  
-}
+  }
 /* Since positioning the image, we need to help out the caption */
 .carousel-caption {
   z-index: 10;
   color:#000000;
-  font-family:Verdana, Arial, Helvetica, sans-serif
+  font-family:Verdana, Geneva, Arial, Helvetica, sans-serif;
 }
 
 /* Declare heights because of positioning of img element */
 .carousel .item {
-  height: 500px;
-  background-color:#FFFFFF;
+  height: 400px;
+  background-color: inherit;
+  -webkit-transition: 0.5s ease-in-out, left;
+    transition: 0.5s ease-in-out, left;
+    -webkit-transition: 0.5s, ease-in-out, left;
+    -moz-transition: .5s, ease-in-out, left;
+    -o-transition: .5s, ease-in-out, left;
+    transition: .5s, ease-in-out, left;
  
   }
 .carousel-inner > .item > img {
 	position: absolute;
 	top: 88px;
-	left: 300px;
-	min-width: 40%;
-	height: 300px;
+	left: 180px;
+	min-width: 60%;
+	height: 320px;
+	border-radius: 5px;
 }
 .carousel-inner > .item > .first-slide {
   background-color: #777;
@@ -85,7 +107,10 @@ body {
 .carousel-inner > .item > .fifth-slide {
   background-color: #666;
 }
-
+.carousel-control { 
+background: none !important;
+ filter: none !important; 
+  }
 /*DROPDOWN CSS
 --------------------------------------------------*/
 .dropdown-submenu {
@@ -142,53 +167,52 @@ body {
 .featurette-heading {
   font-style:italic;
   font-size:20px;
-  font-family:"Times New Roman", Times, serif;
+  font-family:Tahoma;
  color:#770C00;
   text-decoration:underline;
   line-height: 1;
   text-transform:capitalize;
+  margin-left: 10px;
+  
 }
 .featurette-body{
-font-family:"Times New Roman", Times, serif;
+	font-family:Tahoma;
 color:#770C00;
 font-size:16px;
 font-style:normal;
+margin-left: 10px;
+/*margin-right: 10px;*/
 }
 
 /* Main marketing message and sign up button */
 .jumbotron {
-  text-align: center;
-  background-color:transparent;
-  padding-right:300px;
-  margin-right:600px;
-  width:1300px;
-  
+	background-color:inherit;
+  text-align: center;  
+  width:inherit; 
   
 }
 .jumbotron-vertical{
-min-height:100%;
-min-height:100vh;
-display:flex;
-align-items:center;
+min-height:80%;
+
 }
 .jumbotron .btn {
-  padding: 14px 24px;
-  font-size: 21px;
+  
+  font-size: 15px;
+  
 }
 .jumbotron-caption{
 font-style:italic;
-font-size:12px;
-font-family:Georgia, "Times New Roman", Times, serif;
+font-size:36px;
+font-family:Tahoma;
 text-transform:capitalize;
 color:#770C00;
 text-align:center;
 }
 .jumbotron-body{
-font-style:normal;
-font-size:6px;
-text-transform:none;
-font-family:Georgia, "Times New Roman", Times, serif;
+font-family:Tahoma;
 color:#770C00;
+font-size:20px;
+font-style:normal;
 text-align:center;
 }
 
@@ -237,7 +261,7 @@ padding-right:200px;}
 
 /*Container css*/
 .container-caption{
-font-family:Georgia, "Times New Roman", Times, serif;
+	font-family:Tahoma;
 font-style:normal;
 color:#770C00;
 text-align:left;}
@@ -245,18 +269,19 @@ text-align:left;}
 /*footer*/
 .footer{
 background-color:#FF5FFF;
-font:Georgia, "Times New Roman", Times, serif;
+font-family:"Bookman Old Style";
 font-style:italic;
 color:#001300;
-height:300px;
+height:250px;
+border-radius: 10px;
 
 }
 
 /*google maps*/
 #map-canvas{
-margin-top:90px;
+margin-top:10px;
 margin-bottom:30px;
-margin-left:150px;
+margin-left:10px;
 width:500px;
 height:400px;
 background-color:#CCC;}
@@ -272,15 +297,15 @@ overflow:visible;
 }
 
 #email-form{
-font:Georgia, "Times New Roman", Times, serif;
+	font-family:Tahoma;
 font-style:italic;
 font-weight:500;
 overflow:visible;
 margin-top:20px;
 margin-bottom:30px;
-margin-left:150px;
+margin-left:10px;
 color:#001300;
-background-color:#FFFBF0}
+background-color: inherit }
 
 
 /*
@@ -290,14 +315,14 @@ background-color:#FFFBF0}
 .blog-post {
   margin-bottom: 60px;
   margin-top:100px;
-  font-family:"Times New Roman", Times, serif;
+  font-family:Tahoma;
   font-size:16px;
  color:#770C00;
   padding-left:150px;
   padding-right:150px;
 }
 .blog-post-title {
-font-family:"Times New Roman", Times, serif;
+	font-family:Tahoma;
 color:#770C00;
 text-transform:capitalize;
 text-decoration:underline;
